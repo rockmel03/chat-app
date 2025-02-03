@@ -1,3 +1,8 @@
+import dotenv from "dotenv";
+dotenv.config({
+  path: "src/.env",
+});
+
 import { createServer } from "http";
 import app from "./app.js";
 import connectDB from "./db/index.js";

@@ -1,7 +1,9 @@
+import { Home } from "./pages";
+
 export default function App() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
+    <div className="w-full min-h-screen bg-black text-white ">
+      <Home />
     </div>
   );
 }

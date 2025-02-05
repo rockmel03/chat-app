@@ -1,9 +1,15 @@
-import { Home } from "./pages";
+import { Route, Routes } from "react-router-dom";
+import { Home, Login, Register } from "./pages";
+import { Layout } from "./components";
 
 export default function App() {
   return (
-    <div className="w-full min-h-screen bg-black text-white ">
-      <Home />
-    </div>
+    <Routes>
+      <Route path="login" element={<Login />} />
+      <Route path="register" element={<Register />} />
+      <Route element={<Layout />}>
+        <Route index element={<Home />} />
+      </Route>
+    </Routes>
   );
 }

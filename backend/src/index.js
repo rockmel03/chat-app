@@ -1,8 +1,4 @@
-import dotenv from "dotenv";
-dotenv.config({
-  path: "src/.env",
-});
-
+import "./config/loadEnv.js"; // load environment variables at first
 import { createServer } from "http";
 import app from "./app.js";
 import connectDB from "./db/index.js";

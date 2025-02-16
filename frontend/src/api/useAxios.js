@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import apiInstance from "./axiosInstace";
+import apiInstance from "./axiosInstance";
 import { useAuth } from "../context/AuthContext";
 
 export default function useAxios() {

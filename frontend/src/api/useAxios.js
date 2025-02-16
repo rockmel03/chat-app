@@ -27,7 +27,7 @@ export default function useAxios() {
           return oldReq;
         }
 
-        return Promise.reject(error.message);
+        return Promise.reject(error.response.data); // Return the actual error response;
       }
     );
 

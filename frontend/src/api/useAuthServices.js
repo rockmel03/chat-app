@@ -14,7 +14,9 @@ export const useAuthServices = () => {
       return response.data;
     } catch (error) {
       console.error("Registration Failed: ", error);
-      throw new Error("Registration Failed");
+      throw new Error(
+        error.response?.data?.message || error?.message || "Registration Failed"
+      );
     }
   };
 
@@ -27,7 +29,9 @@ export const useAuthServices = () => {
       return response.data;
     } catch (error) {
       console.error("Login Failed: ", error);
-      throw new Error("Login Failed");
+      throw new Error(
+        error.response?.data?.message || error?.message || "Login Failed"
+      );
     }
   };
 
@@ -37,7 +41,9 @@ export const useAuthServices = () => {
       return response.data;
     } catch (error) {
       console.error("Logout Failed: ", error);
-      throw new Error("Logout Failed");
+      throw new Error(
+        error.response?.data?.message || error?.message || "Logout Failed"
+      );
     }
   };
 
@@ -47,7 +53,11 @@ export const useAuthServices = () => {
       return response.data;
     } catch (error) {
       console.error("Failed to refresh token : ", error);
-      throw new Error("Failed to refresh token");
+      throw new Error(
+        error.response?.data?.message ||
+          error?.message ||
+          "Failed to refresh token"
+      );
     }
   };
 

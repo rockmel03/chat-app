@@ -8,9 +8,10 @@ export default function useAxios() {
   useEffect(() => {
     const requestInterseptor = apiInstance.interceptors.request.use(
       (request) => {
-        if (!request.headers.Authorization && auth.token) {
-          request.headers.Authorization = `Bearer ${auth?.token}`;
+        if (!request.headers.Authorization && auth?.token) {
+          request.headers.Authorization = `Bearer ${auth.token}`;
         }
+        return request
       },
       (error) => error
     );
@@ -23,7 +24,7 @@ export default function useAxios() {
         if (auth?.token && error.status === 401 && !error.isRetried) {
           error.isRetried = true;
           // todo: refresh the tokens
-          return apiInstance(oldReq);
+          return oldReq;
         }
 
         return Promise.reject(error.message);

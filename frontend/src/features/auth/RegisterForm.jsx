@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { InputFeild } from "./InputFeild";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuthServices } from "../../api/useAuthServices";
+import { useAuth } from "../../context/AuthContext";
 
 const initialFormData = {
   username: "",
@@ -22,12 +24,24 @@ export const RegisterForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const { registerUser } = useAuthServices();
+  const { setAuth } = useAuth();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    setFormData(initialFormData);
-    navigate(from, { replace: true });
+
+    try {
+      const responseData = await registerUser(formData);
+      setAuth({ token: responseData.data?.accessToken, ...responseData?.data });
+
+      //reset form and navigate
+      setFormData(initialFormData);
+      navigate(from, { replace: true });
+    } catch (error) {
+      setError(error?.message || "Registration failed");
+    }
   };
+
   return (
     <form onSubmit={handleSubmit} autoComplete="off">
       {error && <p className="text-red-500 font-medium text-center">{error}</p>}

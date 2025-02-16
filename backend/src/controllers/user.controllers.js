@@ -23,7 +23,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   const { username, email, password } = req.body;
 
-  const existingUser = await User.find({ $or: [{ username }, { email }] });
+  const existingUser = await User.findOne({ $or: [{ username }, { email }] });
   if (existingUser) throw new ApiError(400, "User already exists");
 
   const user = await User.create({ username, email, password });
@@ -57,7 +57,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   const { user, password } = req.body;
 
-  const findedUser = await User.find({
+  const findedUser = await User.findOne({
     $or: [{ username: user }, { email: user }],
   });
 
@@ -66,7 +66,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   const isPwdMatched = findedUser.comparePassword(password);
   if (!isPwdMatched) throw new ApiError(400, "Invalid credentials");
 
-  const { accessToken, refreshToken } = generateAuthTokens(user);
+  const { accessToken, refreshToken } = generateAuthTokens(findedUser);
   if (!accessToken || !refreshToken)
     throw new Error("failed to generate tokens");
 

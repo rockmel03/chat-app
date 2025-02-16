@@ -25,7 +25,7 @@ import userRoutes from "./routes/user.routes.js";
 
 // routes
 app.use("/api/v1/healthcheck", healthcheckRoutes);
-app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/users", userRoutes);
 
 // default error handler
 app.use(errorHandler);

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { InputFeild } from "./InputFeild";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuthServices } from "../../api/useAuthServices";
+import { useAuth } from "../../context/AuthContext";
 
 const initialFormData = {
   user: "",
@@ -21,11 +23,20 @@ export const LoginForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const { loginUser } = useAuthServices();
+  const { setAuth } = useAuth();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    setFormData(initialFormData);
-    navigate(from, { replace: true });
+    try {
+      const responseData = await loginUser(formData);
+      setAuth({ token: responseData.data?.accessToken, ...responseData?.data });
+
+      setFormData(initialFormData);
+      navigate(from, { replace: true });
+    } catch (error) {
+      setError(error.message || "Login failed");
+    }
   };
 
   return (

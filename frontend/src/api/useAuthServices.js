@@ -1,9 +1,6 @@
 import apiInstance from "./axiosInstance";
-import useAxios from "./useAxios";
 
 export const useAuthServices = () => {
-  const axiosPrivate = useAxios();
-
   const registerUser = async function ({ username, email, password }) {
     try {
       const response = await apiInstance.post("/users/register", {
@@ -35,21 +32,9 @@ export const useAuthServices = () => {
     }
   };
 
-  const logoutUser = async function () {
-    try {
-      const response = await axiosPrivate.get("/users/logout");
-      return response.data;
-    } catch (error) {
-      console.error("Logout Failed: ", error);
-      throw new Error(
-        error.response?.data?.message || error?.message || "Logout Failed"
-      );
-    }
-  };
-
   const refreshTokens = async function () {
     try {
-      const response = await axiosPrivate.get("/users/refresh");
+      const response = await apiInstance.get("/users/refresh");
       return response.data;
     } catch (error) {
       console.error("Failed to refresh token : ", error);
@@ -61,5 +46,5 @@ export const useAuthServices = () => {
     }
   };
 
-  return { registerUser, loginUser, logoutUser, refreshTokens };
+  return { registerUser, loginUser, refreshTokens };
 };

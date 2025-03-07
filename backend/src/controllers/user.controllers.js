@@ -12,7 +12,7 @@ const generateAuthTokens = function (user) {
     const refreshToken = user.generateRefreshToken();
     return { accessToken, refreshToken };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error("failed to generate tokens");
   }
 };
@@ -35,6 +35,10 @@ export const registerUser = asyncHandler(async (req, res) => {
   user.refreshToken = refreshToken;
   await user.save();
 
+  const userData = user.toObject();
+  delete userData.password;
+  delete userData.refreshToken;
+
   return res
     .status(201)
     .cookie("token", refreshToken, {
@@ -44,7 +48,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     })
     .json(
       ApiResponse.success(
-        { user, accessToken, refreshToken },
+        { user: userData, accessToken, refreshToken },
         "Registered successfully",
         201
       )
@@ -63,7 +67,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   if (!findedUser) throw new ApiError(400, "Invalid credentials");
 
-  const isPwdMatched = findedUser.comparePassword(password);
+  const isPwdMatched = await findedUser.comparePassword(password);
   if (!isPwdMatched) throw new ApiError(400, "Invalid credentials");
 
   const { accessToken, refreshToken } = generateAuthTokens(findedUser);
@@ -72,6 +76,10 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   findedUser.refreshToken = refreshToken;
   await findedUser.save();
+
+  const userData = findedUser.toObject();
+  delete userData.password;
+  delete userData.refreshToken;
 
   return res
     .status(200)
@@ -82,13 +90,16 @@ export const loginUser = asyncHandler(async (req, res) => {
     })
     .json(
       ApiResponse.success(
-        { user: findedUser, accessToken, refreshToken },
+        { user: userData, accessToken, refreshToken },
         "Logged in successfully"
       )
     );
 });
 
 export const refreshAuthTokens = asyncHandler(async (req, res) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) throw ApiError.validationError(result.array());
+
   const token = req.body?.refreshToken || req.cookies?.token;
   if (!token) throw new ApiError(400, "invalid refresh token");
 
@@ -96,7 +107,7 @@ export const refreshAuthTokens = asyncHandler(async (req, res) => {
   if (!decodedToken)
     throw new ApiError(400, "invalid or expired refresh token");
 
-  const user = User.findById(decodedToken._id);
+  const user = await User.findById(decodedToken._id);
   if (!user) throw new ApiError(404, "user not found");
 
   const { accessToken, refreshToken } = generateAuthTokens(user);
@@ -115,7 +126,7 @@ export const refreshAuthTokens = asyncHandler(async (req, res) => {
     })
     .json(
       ApiResponse.success(
-        { user, accessToken, refreshToken },
+        { accessToken, refreshToken },
         "Logged in successfully"
       )
     );

@@ -8,13 +8,13 @@ export const createNewChat = asyncHandler(async (req, res) => {
   const result = validationResult(req);
   if (!result.isEmpty()) throw ApiError.validationError(result.array());
 
-  const { isGroupChat, chatName, participants, groupAdmin } = req.body;
+  const { isGroupChat, chatName, participants } = req.body;
 
   const createdChat = await Chat.create({
     isGroupChat,
     chatName,
     participants: [...new Set([...participants, req.user._id])],
-    groupAdmin,
+    groupAdmin: req.user?._id,
   });
   if (!createdChat) throw new ApiError(500, "Failed to create Chat ");
 
@@ -125,6 +125,11 @@ export const removeParticipant = asyncHandler(async (req, res) => {
 
   const isAdmin = chat.isGroupChat && chat.groupAdmin === req.user?._id;
   const isUserItself = chat.participants.includes(req.user?._id);
+
+  // TODO: think about more edge cases such as
+  // user could be admin
+  // user could be paricipant
+  // user could be both admin and participant
 
   if (!isAdmin || !isUserItself) throw new ApiError(403, "Unauthorized");
 

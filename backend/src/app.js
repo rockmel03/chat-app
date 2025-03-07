@@ -22,10 +22,12 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 // routes import
 import healthcheckRoutes from "./routes/healthcheck.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import chatRoutes from "./routes/chat.routes.js";
 
 // routes
 app.use("/api/v1/healthcheck", healthcheckRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/chats", chatRoutes);
 
 // default error handler
 app.use(errorHandler);

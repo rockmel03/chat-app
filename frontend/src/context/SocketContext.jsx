@@ -16,7 +16,8 @@ export const SocketProvider = ({ children, token }) => {
   );
 
   useEffect(() => {
-    socket.on("connect", (data) => {
+    socket.connect();
+    socket.on("connection", (data) => {
       console.log("socket.io connected", data);
     });
   }, []);

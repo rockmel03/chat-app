@@ -1,6 +1,7 @@
 import { ChatList, SearchBar } from "../components";
 import { useAuth } from "../context/AuthContext";
 import { SocketProvider } from "../context/SocketContext";
+import { Chat } from "../features/chat";
 
 export const Home = () => {
   const { auth } = useAuth();
@@ -36,7 +37,9 @@ export const Home = () => {
             </div>
           </div>
         </aside>
-        <section className=" bg-zinc-400"></section>
+        <section className=" bg-zinc-200">
+          <Chat />
+        </section>
       </div>
     </SocketProvider>
   );

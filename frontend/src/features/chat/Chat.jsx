@@ -1,13 +1,33 @@
+import { useEffect, useState } from "react";
+import { useSocket } from "../../context/SocketContext";
+import { useAuth } from "../../context/AuthContext";
 import { ChatInput } from "./ChatInput";
 import { IncomingMsg } from "./IncomingMsg";
 import { OutgoingMsg } from "./OutgoingMsg";
 
 export const Chat = () => {
+  const { socket } = useSocket();
+  const { auth } = useAuth();
+  const [messageList, setMessageList] = useState([]);
+
   const sendMessage = (message) => {
     if (message.trim().lenght <= 0) return;
     console.log(message);
+    socket.emit("message", { content: message });
   };
 
+  useEffect(() => {
+    const onMessage = (data) => {
+      console.log(data);
+      setMessageList((prev) => [...prev, data]);
+    };
+
+    socket.on("message", onMessage);
+
+    return () => {
+      socket.off("message", onMessage);
+    };
+  }, [socket]);
   return (
     <div className="w-full h-full max-h-screen flex flex-col justify-between ">
       <div className="bg-darkbg chat-header p-3 flex items-center justify-between">
@@ -24,11 +44,15 @@ export const Chat = () => {
       </div>
       <div className="chat-content flex-1 px-4 py-2 overflow-auto flex flex-col gap-1 scroll-smooth">
         {/** all messages appear here */}
-        {[...new Array(8)].map((msg, idx) => {
-          const condition = Math.round(Math.random() * 10) < 5;
+        {messageList.map((msgData, idx) => {
+          const condition = auth.user?._id === msgData?.sender;
           return (
             <div key={idx} className="message ">
-              {condition ? <IncomingMsg /> : <OutgoingMsg />}
+              {condition ? (
+                <OutgoingMsg data={msgData} />
+              ) : (
+                <IncomingMsg data={msgData} />
+              )}
             </div>
           );
         })}

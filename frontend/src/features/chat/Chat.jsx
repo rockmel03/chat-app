@@ -1,4 +1,13 @@
+import { ChatInput } from "./ChatInput";
+import { IncomingMsg } from "./IncomingMsg";
+import { OutgoingMsg } from "./OutgoingMsg";
+
 export const Chat = () => {
+  const sendMessage = (message) => {
+    if (message.trim().lenght <= 0) return;
+    console.log(message);
+  };
+
   return (
     <div className="w-full h-full max-h-screen flex flex-col justify-between ">
       <div className="bg-darkbg chat-header p-3 flex items-center justify-between">
@@ -15,146 +24,17 @@ export const Chat = () => {
       </div>
       <div className="chat-content flex-1 px-4 py-2 overflow-auto flex flex-col gap-1 scroll-smooth">
         {/** all messages appear here */}
-        <div className="incoming-message ">
-          <div className="bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-left-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
+        {[...new Array(8)].map((msg, idx) => {
+          const condition = Math.round(Math.random() * 10) < 5;
+          return (
+            <div key={idx} className="message ">
+              {condition ? <IncomingMsg /> : <OutgoingMsg />}
             </div>
-          </div>
-        </div>
-        <div className="outgoing-message ">
-          <div className="ml-auto bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-right-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
-            </div>
-          </div>
-        </div>
-        <div className="outgoing-message ">
-          <div className="ml-auto bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-right-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
-            </div>
-          </div>
-        </div>
-        <div className="outgoing-message ">
-          <div className="ml-auto bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-right-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
-            </div>
-          </div>
-        </div>
-        <div className="outgoing-message ">
-          <div className="ml-auto bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-right-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
-            </div>
-          </div>
-        </div>
-        <div className="outgoing-message ">
-          <div className="ml-auto bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-right-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
-            </div>
-          </div>
-        </div>
-        <div className="outgoing-message ">
-          <div className="ml-auto bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-right-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
-            </div>
-          </div>
-        </div>
-        <div className="outgoing-message ">
-          <div className="ml-auto bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-right-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
-            </div>
-          </div>
-        </div>
-        <div className="outgoing-message ">
-          <div className="ml-auto bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-right-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
-            </div>
-          </div>
-        </div>
-        <div className="outgoing-message ">
-          <div className="ml-auto bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-right-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
-            </div>
-          </div>
-        </div>
-        <div className="outgoing-message ">
-          <div className="ml-auto bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-right-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
-            </div>
-          </div>
-        </div>
-        <div className="outgoing-message ">
-          <div className="ml-auto bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-right-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
-            </div>
-          </div>
-        </div>
-        <div className="outgoing-message ">
-          <div className="ml-auto bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-right-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
-            </div>
-          </div>
-        </div>
-        <div className="outgoing-message ">
-          <div className="ml-auto bg-primary px-2 py-1 w-fit rounded-md relative before:w-3 before:rotate-45 before:aspect-square before:bg-inherit before:absolute before:-right-1 before:top-2">
-            <div className="z-[1] relative leading-[1.2]">
-              <p>hellow</p>
-              <p>hellow world</p>
-              <p>hellow how are you !</p>
-            </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
       <div className="chat-input pb-2 px-2">
-        <form className="px-2 bg-white text-black shadow-2xl rounded-full flex gap-2">
-          <textarea
-            type="text"
-            name="message"
-            id="message"
-            rows="1"
-            className="border-none outline-none bg-transparent p-2 resize-none text-inherit flex-1"
-          ></textarea>
-          <button type="submit" className="text-inherit text-2xl">
-            <i className="ri-send-plane-2-fill"></i>
-          </button>
-        </form>
+        <ChatInput sendMessage={sendMessage} />
       </div>
     </div>
   );

@@ -50,8 +50,8 @@ export const registerUser = asyncHandler(async (req, res) => {
       ApiResponse.success(
         { user: userData, accessToken, refreshToken },
         "Registered successfully",
-        201
-      )
+        201,
+      ),
     );
 });
 
@@ -91,8 +91,8 @@ export const loginUser = asyncHandler(async (req, res) => {
     .json(
       ApiResponse.success(
         { user: userData, accessToken, refreshToken },
-        "Logged in successfully"
-      )
+        "Logged in successfully",
+      ),
     );
 });
 
@@ -127,8 +127,8 @@ export const refreshAuthTokens = asyncHandler(async (req, res) => {
     .json(
       ApiResponse.success(
         { accessToken, refreshToken },
-        "Logged in successfully"
-      )
+        "Logged in successfully",
+      ),
     );
 });
 
@@ -149,4 +149,19 @@ export const logoutUser = asyncHandler(async (req, res) => {
   });
   res.status(200);
   res.json(ApiResponse.success(null, "logged out successfully"));
+});
+
+export const getUsers = asyncHandler(async (req, res) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) throw ApiError.validationError(result.array());
+
+  const { search } = req.query;
+
+  const findedUsers = await User.find({
+    $or: [{ username: { $regex: search } }, { email: { $regex: search } }],
+  })
+    .select("username email")
+    .limit(10);
+
+  return res.status(200).json(ApiResponse.success({ users: findedUsers }));
 });

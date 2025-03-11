@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { body } from "express-validator";
-
+import { body, query } from "express-validator";
+import authMiddleware from "../middlewares/authMiddleware.js";
 import * as userController from "../controllers/user.controllers.js";
 
 const router = Router();
@@ -20,7 +20,7 @@ router.post(
       .isStrongPassword()
       .withMessage("password must be strong"),
   ],
-  userController.registerUser
+  userController.registerUser,
 );
 
 router.post(
@@ -29,7 +29,7 @@ router.post(
     body("user").isString().trim().withMessage("invalid user "),
     body("password").isString().trim().withMessage("invalid password"),
   ],
-  userController.loginUser
+  userController.loginUser,
 );
 
 router.get(
@@ -38,9 +38,21 @@ router.get(
     .optional()
     .isJWT()
     .withMessage("refreshToken must be a JWT token"),
-  userController.refreshAuthTokens
+  userController.refreshAuthTokens,
 );
 
 router.get("/logout", userController.logoutUser);
+
+router.get(
+  "/",
+  [
+    query("search")
+      .isString()
+      .isLength({ min: 3, max: 50 })
+      .withMessage("'search' query must be 3-50 characters long"),
+  ],
+  authMiddleware,
+  userController.getUsers,
+);
 
 export default router;

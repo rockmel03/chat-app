@@ -146,13 +146,13 @@ export const addNewParticipant = asyncHandler(async (req, res) => {
   if (!result.isEmpty()) throw ApiError.validationError(result.array());
 
   const { chatId } = req.params;
-  const { newParticipant } = req.body;
+  const { participant } = req.body;
 
   const chat = await Chat.findById(chatId);
   if (!chat) throw new ApiError(400, "Chat not existed ");
   if (!chat.isGroupChat) throw new ApiError(403, "Invalid move");
 
-  const validParticipant = await User.findById(newParticipant);
+  const validParticipant = await User.findById(participant);
   if (!validParticipant)
     throw new ApiError(400, "participant is not valid user");
 
@@ -162,15 +162,15 @@ export const addNewParticipant = asyncHandler(async (req, res) => {
   const updatedChat = await Chat.findByIdAndUpdate(
     chat._id,
     {
-      participants: [...new Set([...chat.participants, newParticipant])],
+      participants: [...new Set([...chat.participants, participant])],
     },
-    { new: true }
+    { new: true },
   );
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, updatedChat, "New Participant added successfully!")
+      new ApiResponse(200, updatedChat, "New Participant added successfully!"),
     );
 });
 
@@ -214,13 +214,13 @@ export const removeParticipant = asyncHandler(async (req, res) => {
     {
       participants: filteredParticipants,
     },
-    { new: true }
+    { new: true },
   );
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, updatedChat, "Participant removed successfully!")
+      new ApiResponse(200, updatedChat, "Participant removed successfully!"),
     );
 });
 
@@ -240,7 +240,7 @@ export const deleteChat = asyncHandler(async (req, res) => {
   if (!isAdmin)
     throw new ApiError(
       403,
-      "Unauthorized : only admin can perform this action"
+      "Unauthorized : only admin can perform this action",
     );
 
   const deletedChat = await Chat.findByIdAndDelete(chatId);

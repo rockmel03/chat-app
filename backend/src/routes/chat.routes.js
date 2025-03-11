@@ -25,7 +25,7 @@ router
         .isInt()
         .withMessage("limit should be an intenger"),
     ],
-    getChatList
+    getChatList,
   )
   .post(
     [
@@ -58,7 +58,7 @@ router
           // is valid mongoId
           const field = req.body[path];
           const isMongoId = field.every((element) =>
-            mongoose.isValidObjectId(element)
+            mongoose.isValidObjectId(element),
           );
 
           if (isMongoId) return true;
@@ -66,30 +66,35 @@ router
         })
         .withMessage("participants should be an Array of userIds"),
     ],
-    createNewChat
+    createNewChat,
   );
 
 router
-  .route("/chatId")
+  .route("/:chatId")
   .delete(
     [param("chatId").isMongoId().withMessage("chatId should be valid")],
-    deleteChat
+    deleteChat,
   );
 
 router
-  .route("/participants")
-  .post(
-    body("newParticipant")
-      .isMongoId()
-      .withMessage("paticipant must be valid mongo Id"),
-    addNewParticipant
+  .route("/:chatId/participants")
+  .patch(
+    [
+      param("chatId").isMongoId().withMessage("chatId should be valid"),
+      body("participant")
+        .isMongoId()
+        .withMessage("paticipant must be valid mongo Id"),
+    ],
+    addNewParticipant,
   )
   .delete(
-    body("participant")
-      .optional()
-      .isMongoId()
-      .withMessage("participant must be valid mongo Id"),
-    removeParticipant
+    [
+      param("chatId").isMongoId().withMessage("chatId should be valid"),
+      body("participant")
+        .isMongoId()
+        .withMessage("paticipant must be valid mongo Id"),
+    ],
+    removeParticipant,
   );
 
 export default router;

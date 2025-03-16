@@ -3,6 +3,9 @@ import { InputFeild } from "./InputFeild";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthServices } from "../../api/useAuthServices";
 import { useAuth } from "../../context/AuthContext";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import useToggle from "../../hooks/useToggle";
+import { TogglePersist } from "./TogglePersist";
 
 const initialFormData = {
   user: "",
@@ -17,6 +20,8 @@ export const LoginForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.path || "/";
+
+  const [isLoggedIn, setIsLoggedIn] = useLocalStorage("isLoggedIn", false);
 
   const inputHandler = (e) => {
     const { name, value } = e.target;
@@ -33,6 +38,7 @@ export const LoginForm = () => {
       setAuth({ token: responseData.data?.accessToken, ...responseData?.data });
 
       setFormData(initialFormData);
+      setIsLoggedIn(true);
       navigate(from, { replace: true });
     } catch (error) {
       setError(error.message || "Login failed");
@@ -75,9 +81,9 @@ export const LoginForm = () => {
           </div>
         )}
       </div>
-      {/* <div className="mb-4">
+      <div className="mb-4">
         <TogglePersist label={"Remember me"} />
-      </div> */}
+      </div>
       <button
         type="submit"
         className="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700"

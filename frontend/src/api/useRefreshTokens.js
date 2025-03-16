@@ -6,10 +6,10 @@ export default function useRefreshTokens() {
   const { refreshTokens } = useAuthServices();
   return async function refresh() {
     try {
-      const data = await refreshTokens();
-      if (data?.statusCode === 200) {
-        const { accessToken, refreshToken } = data;
-        setAuth((prev) => ({ ...prev, token: accessToken, ...data }));
+      const response = await refreshTokens();
+      if (response?.statusCode === 200) {
+        const { accessToken, refreshToken } = response.data;
+        setAuth((prev) => ({ ...prev, token: accessToken, ...response.data }));
         return { accessToken, refreshToken };
       }
 

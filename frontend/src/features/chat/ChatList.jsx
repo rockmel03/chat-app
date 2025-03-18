@@ -7,7 +7,7 @@ export const ChatList = ({ chatList }) => {
       {chatList.length > 0 &&
         chatList.map((item) => (
           <li
-            key={item}
+            key={item._id}
             className="px-2 py-2 rounded-md hover:bg-zinc-900 flex items-center justify-between cursor-pointer transition ease-linear duration-150"
           >
             <div className="flex gap-2 items-center">

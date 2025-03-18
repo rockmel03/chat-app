@@ -6,7 +6,7 @@ export default function useChatServices() {
   const createChat = async (
     participants = [],
     isGroupChat = false,
-    chatName = "",
+    chatName = ""
   ) => {
     try {
       const response = await axiosPrivate.post("/chats", {
@@ -14,7 +14,7 @@ export default function useChatServices() {
         isGroupChat,
         chatName,
       });
-      return response.data;
+      return response?.data;
     } catch (err) {
       console.error("Failed to crate chat", err);
       throw new Error("Failed to crate chat");
@@ -28,7 +28,7 @@ export default function useChatServices() {
 
     try {
       const response = await axiosPrivate.get(`/chats/?${query.toString()}`);
-      return response.data;
+      return response?.data;
     } catch (err) {
       console.error("Failed to get chat list", err);
       throw new Error("Failed to get chat list");
@@ -37,9 +37,12 @@ export default function useChatServices() {
 
   const addParticipant = async (chatId, participantId) => {
     try {
-      const response = await axiosPrivate.patch(`/chats/${chatId}/paticipants`, {
-        paticipant: participantId,
-      });
+      const response = await axiosPrivate.patch(
+        `/chats/${chatId}/paticipants`,
+        {
+          paticipant: participantId,
+        }
+      );
 
       return response.data;
     } catch (err) {
@@ -50,12 +53,14 @@ export default function useChatServices() {
 
   const removeParticipant = async (chatId, participantId) => {
     try {
+      const response = await axiosPrivate.delete(
+        `/chats/${chatId}/paticipants`,
+        {
+          paticipant: participantId,
+        }
+      );
 
-      const response = await axiosPrivate.delete(`/chats/${chatId}/paticipants`, {
-        paticipant: participantId,
-      });
-
-      return response.data;
+      return response?.data;
     } catch (err) {
       console.error("Failed to remove participant", err);
       throw new Error("Failed to remove participant");
@@ -66,7 +71,7 @@ export default function useChatServices() {
     try {
       const response = await axiosPrivate.delete(`/chats/${chatId}`);
 
-      return response.data;
+      return response?.data;
     } catch (err) {
       console.error("Failed to delete chat", err);
       throw new Error("Failed to delete chat");

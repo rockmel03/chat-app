@@ -4,6 +4,7 @@ export const SearchBar = ({ placeholder, onChangeHandler }) => {
   const [input, setInput] = useState("");
 
   useEffect(() => {
+    if (!input) return;
     const timeOut = setTimeout(() => {
       onChangeHandler(input);
     }, 1000);

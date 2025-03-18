@@ -25,7 +25,7 @@ router
         .isInt()
         .withMessage("limit should be an intenger"),
     ],
-    getChatList,
+    getChatList
   )
   .post(
     [
@@ -33,9 +33,9 @@ router
         .default(false)
         .isBoolean()
         .withMessage("isGroupChat should be boolean"),
-      body("chatname")
+      body("chatName")
         .isString()
-        .withMessage("chatname should be string")
+        .withMessage("chatName should be string")
         .custom((input, meta) => {
           const { req, path } = meta;
           const field = req.body[path]?.trim();
@@ -58,7 +58,7 @@ router
           // is valid mongoId
           const field = req.body[path];
           const isMongoId = field.every((element) =>
-            mongoose.isValidObjectId(element),
+            mongoose.isValidObjectId(element)
           );
 
           if (isMongoId) return true;
@@ -66,14 +66,14 @@ router
         })
         .withMessage("participants should be an Array of userIds"),
     ],
-    createNewChat,
+    createNewChat
   );
 
 router
   .route("/:chatId")
   .delete(
     [param("chatId").isMongoId().withMessage("chatId should be valid")],
-    deleteChat,
+    deleteChat
   );
 
 router
@@ -85,7 +85,7 @@ router
         .isMongoId()
         .withMessage("paticipant must be valid mongo Id"),
     ],
-    addNewParticipant,
+    addNewParticipant
   )
   .delete(
     [
@@ -94,7 +94,7 @@ router
         .isMongoId()
         .withMessage("paticipant must be valid mongo Id"),
     ],
-    removeParticipant,
+    removeParticipant
   );
 
 export default router;

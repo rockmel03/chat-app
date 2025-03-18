@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { SocketProvider } from "../context/SocketContext";
 import { Chat, ChatList, CreateChatForm } from "../features/chat";
 import useChatServices from "../api/useChatServices";
+import { NewChatForm } from "../features/chat/chatForm/newChatForm";
 
 export const Home = () => {
   const { auth } = useAuth();
@@ -46,7 +47,7 @@ export const Home = () => {
               onClick={(e) => e.stopPropagation()}
               className="p-5 bg-darkbg rounded-lg max-w-sm w-full"
             >
-              <CreateChatForm />
+              <NewChatForm />
             </div>
           </div>
         )}{" "}

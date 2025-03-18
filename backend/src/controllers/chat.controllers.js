@@ -75,7 +75,7 @@ export const createNewChat = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(ApiResponse.success(chat, "Chat created successfully", 201));
+    .json(ApiResponse.success(chat[0], "Chat created successfully", 201));
 });
 
 export const getChatList = asyncHandler(async (req, res) => {
@@ -164,13 +164,13 @@ export const addNewParticipant = asyncHandler(async (req, res) => {
     {
       participants: [...new Set([...chat.participants, participant])],
     },
-    { new: true },
+    { new: true }
   );
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, updatedChat, "New Participant added successfully!"),
+      new ApiResponse(200, updatedChat, "New Participant added successfully!")
     );
 });
 
@@ -214,13 +214,13 @@ export const removeParticipant = asyncHandler(async (req, res) => {
     {
       participants: filteredParticipants,
     },
-    { new: true },
+    { new: true }
   );
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, updatedChat, "Participant removed successfully!"),
+      new ApiResponse(200, updatedChat, "Participant removed successfully!")
     );
 });
 
@@ -240,7 +240,7 @@ export const deleteChat = asyncHandler(async (req, res) => {
   if (!isAdmin)
     throw new ApiError(
       403,
-      "Unauthorized : only admin can perform this action",
+      "Unauthorized : only admin can perform this action"
     );
 
   const deletedChat = await Chat.findByIdAndDelete(chatId);

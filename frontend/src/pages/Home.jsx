@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import { SearchBar } from "../components";
 import { useAuth } from "../context/AuthContext";
 import { SocketProvider } from "../context/SocketContext";
-import { Chat, ChatList, CreateChatForm } from "../features/chat";
+import { Chat, ChatList, NewChatForm } from "../features/chat";
 import useChatServices from "../api/useChatServices";
-import { NewChatForm } from "../features/chat/chatForm/newChatForm";
 
 export const Home = () => {
   const { auth } = useAuth();

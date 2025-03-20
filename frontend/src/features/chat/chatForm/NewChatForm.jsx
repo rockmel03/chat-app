@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SearchBar } from "../../../components";
 import useUserServices from "../../../api/useUserServices";
 import useChatServices from "../../../api/useChatServices";
@@ -29,21 +29,6 @@ export const NewChatForm = () => {
     }
   };
 
-  const handleSelectClick = (user) => {
-    setParticipants((prev) =>
-      prev.some((usr) => usr._id === user._id)
-        ? isGroupChat
-          ? prev.filter((usr) => usr._id !== user._id)
-          : []
-        : isGroupChat
-        ? [...prev, user]
-        : [user]
-    );
-
-    // create new chat, if 1 to 1 chat
-    if (!isGroupChat) handleCreateNewChat();
-  };
-
   const { createChat } = useChatServices();
   const navigate = useNavigate();
 
@@ -60,10 +45,31 @@ export const NewChatForm = () => {
     }
   };
 
+  const handleSelectClick = (user) => {
+    setParticipants((prev) => {
+      const isSelected = prev.some((usr) => usr._id === user._id);
+      if (isSelected) {
+        return isGroupChat ? prev.filter((usr) => usr._id !== user._id) : [];
+      } else {
+        return isGroupChat ? [...prev, user] : [user];
+      }
+    });
+  };
+
+  // If it's a one-on-one chat, immediately create a new chat whenever participant changes
+  useEffect(() => {
+    if (!isGroupChat && participants.length > 0) {
+      handleCreateNewChat();
+    }
+  }, [participants]);
+
   const [showConfirmChatModal, setShowConfirmChatModal] = useState(false);
 
   const handleConfirmClick = () => {
     console.log({ isGroupChat, participants, chatname });
+    if (!isGroupChat && chatname?.trim().length < 4) return;
+    // create group chat
+    handleCreateNewChat();
   };
 
   const handleCancelClick = () => {

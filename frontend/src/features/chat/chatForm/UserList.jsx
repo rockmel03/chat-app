@@ -1,13 +1,16 @@
+import { useAuth } from "../../../context/AuthContext";
 import ListItem from "./ListItem";
 import PropTypes from "prop-types";
 
 const UserList = ({ users, participants, onUserClick, isGroupChat }) => {
+  const { auth } = useAuth();
   return (
     <div className="h-30 overflow-auto">
       {users.length > 0 ? (
         users.map((user) => {
-          const { _id: id, username, email } = user;
+          if (user._id === auth.user?._id) return;
 
+          const { _id: id, username, email } = user;
           const isSelected = participants.some((usr) => usr._id === user._id);
           const iconElement = isSelected ? (
             <i className="ri-checkbox-circle-fill text-green-500"></i>

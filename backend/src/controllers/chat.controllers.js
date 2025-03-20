@@ -99,6 +99,22 @@ export const getChatList = asyncHandler(async (req, res) => {
       },
     },
     {
+      $lookup: {
+        from: "users",
+        localField: "participants",
+        foreignField: "_id",
+        as: "participants",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              email: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
       $unwind: {
         path: "$groupAdmin",
         preserveNullAndEmptyArrays: true,

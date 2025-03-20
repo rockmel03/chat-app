@@ -27,7 +27,7 @@ export default function useAxios() {
           error.isRetried = true;
           const { accessToken } = await refresh();
           oldReq.headers.Authorization = `Bearer ${accessToken}`;
-          return oldReq;
+          return apiInstance(oldReq); // retry request
         }
 
         return Promise.reject(error.response.data); // Return the actual error response;

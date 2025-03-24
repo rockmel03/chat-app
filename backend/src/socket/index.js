@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import corsOptions from "../config/corsOptions.js";
 import jwt from "jsonwebtoken";
 import Message from "../models/message.model.js";
+import mongoose from "mongoose";
 
 export default function initSocketServer(httpServer) {
   const io = new Server(httpServer, {
@@ -29,13 +30,46 @@ export default function initSocketServer(httpServer) {
   io.on("connection", (socket) => {
     console.log("a user connected", socket.id);
 
-    socket.on("message", async ({ content }) => {
-      console.log({ content });
-      const message = new Message({
-        sender: socket.user?._id,
-        content,
+    socket.on("join-chat", ({ chatId }) => {
+      socket.join(chatId);
+
+      console.log("chat joined", {
+        socketId: socket.id,
+        userId: socket.user?._id,
+        chatId,
       });
-      io.emit("message", message);
+    });
+
+    socket.on("leave-chat", ({ chatId }) => {
+      if (socket.rooms.has(chatId)) {
+        socket.leave(chatId);
+
+        console.log("chat leaved", {
+          socketId: socket.id,
+          userId: socket.user?._id,
+          chatId,
+        });
+      }
+    });
+
+    socket.on("message", async ({ content, chatId }) => {
+      console.log({ content, chatId });
+      if (!chatId || !mongoose.isValidObjectId(chatId)) {
+        throw new Error("invalid chatId");
+      }
+      try {
+        const message = await Message.create({
+          sender: socket.user?._id,
+          content,
+          chat: chatId,
+        });
+        const msgData = message.toObject();
+        msgData.sender = socket?.user;
+        io.to(chatId).emit("message", msgData);
+      } catch (error) {
+        console.error(error);
+        throw new Error("Failed to create meassage");
+      }
     });
 
     socket.on("disconnect", (reson) => {

@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { SearchBar } from "../components";
 import { useAuth } from "../context/AuthContext";
 import { SocketProvider } from "../context/SocketContext";
-import { Chat, ChatList, NewChatForm } from "../features/chat";
+import { ChatList, NewChatForm } from "../features/chat";
 import useChatServices from "../api/useChatServices";
+import { Outlet } from "react-router-dom";
 
 export const Home = () => {
   const { auth } = useAuth();
@@ -80,7 +81,7 @@ export const Home = () => {
           </div>
         </aside>
         <section className=" bg-zinc-200">
-          <Chat />
+          <Outlet />
         </section>
       </div>
     </SocketProvider>

@@ -211,7 +211,7 @@ export const getChatById = asyncHandler(async (req, res) => {
       $lookup: {
         from: "messages",
         localField: "_id",
-        foreignField: "chatId",
+        foreignField: "chat",
         as: "messages",
         pipeline: [
           {

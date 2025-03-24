@@ -35,6 +35,16 @@ export default function useChatServices() {
     }
   };
 
+  const getChatById = async (chatId) => {
+    try {
+      const response = await axiosPrivate.get(`/chats/${chatId}`);
+      return response?.data;
+    } catch (error) {
+      console.error("Failed to get Chat", error);
+      throw new Error("Failed to get Chat");
+    }
+  };
+
   const addParticipant = async (chatId, participantId) => {
     try {
       const response = await axiosPrivate.patch(
@@ -81,6 +91,7 @@ export default function useChatServices() {
   return {
     createChat,
     getChatList,
+    getChatById,
     addParticipant,
     removeParticipant,
     deleteChat,

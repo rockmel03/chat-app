@@ -152,6 +152,102 @@ export const getChatList = asyncHandler(async (req, res) => {
     .json(ApiResponse.success({ chats: findedChats, page, limit }, "Success"));
 });
 
+export const getChatById = asyncHandler(async (req, res) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) throw ApiError.validationError(result.array());
+
+  const { chatId } = req.params;
+
+  const chats = await Chat.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(chatId),
+        participants: { $in: [new mongoose.Types.ObjectId(req.user._id)] },
+      },
+    },
+    // lookup pariticipants
+    {
+      $lookup: {
+        from: "users",
+        localField: "participants",
+        foreignField: "_id",
+        as: "participants",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              email: 1,
+            },
+          },
+        ],
+      },
+    },
+    // lookup groupAdmin
+    {
+      $lookup: {
+        from: "users",
+        localField: "groupAdmin",
+        foreignField: "_id",
+        as: "groupAdmin",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              email: 1,
+            },
+          },
+        ],
+      },
+    },
+    // unwind groupAdmin
+    {
+      $unwind: {
+        path: "$groupAdmin",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    // fetch messages
+    {
+      $lookup: {
+        from: "messages",
+        localField: "_id",
+        foreignField: "chatId",
+        as: "messages",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "sender",
+              foreignField: "_id",
+              as: "sender",
+              pipeline: [
+                {
+                  $project: {
+                    username: 1,
+                    email: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $unwind: {
+              path: "$sender",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+        ],
+      },
+    },
+  ]);
+
+  if (chats?.length === 0) throw new ApiError("Chat not found");
+
+  return res
+    .status(200)
+    .json(ApiResponse.success(chats[0], "Chat found successfully"));
+});
+
 export const addNewParticipant = asyncHandler(async (req, res) => {
   // find chat by id
   // check isAdmin

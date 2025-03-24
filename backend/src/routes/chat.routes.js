@@ -6,6 +6,7 @@ import {
   addNewParticipant,
   createNewChat,
   deleteChat,
+  getChatById,
   getChatList,
   removeParticipant,
 } from "../controllers/chat.controllers.js";
@@ -71,6 +72,10 @@ router
 
 router
   .route("/:chatId")
+  .get(
+    [param("chatId").isMongoId().withMessage("chatId should be valid")],
+    getChatById
+  )
   .delete(
     [param("chatId").isMongoId().withMessage("chatId should be valid")],
     deleteChat

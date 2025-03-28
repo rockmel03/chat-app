@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../../context/SocketContext";
 import { useAuth } from "../../context/AuthContext";
 import { ChatInput } from "./ChatInput";
@@ -14,6 +14,8 @@ export const Chat = () => {
   const { socket } = useSocket();
   const { auth } = useAuth();
   const { getChatById } = useChatServices();
+
+  const messageListRef = useRef(null);
 
   const sendMessage = (message) => {
     if (message.trim().lenght <= 0) return;
@@ -48,10 +50,17 @@ export const Chat = () => {
   }, [chatId, socket]);
 
   useEffect(() => {
+    // scroll to bottom
+    messageListRef.current?.scrollTo({
+      top: messageListRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messageList]);
+
+  useEffect(() => {
     const onMessage = (data) => {
       console.log(data);
       setMessageList((prev) => [...prev, data]);
-      // todo: scroll chat to end
     };
 
     socket.on("message", onMessage);
@@ -87,7 +96,10 @@ export const Chat = () => {
           <i className="ri-more-2-line"></i>
         </button>
       </div>
-      <div className="chat-content flex-1 px-4 py-2 overflow-auto flex flex-col gap-1 scroll-smooth">
+      <div
+        ref={messageListRef}
+        className="chat-content flex-1 px-4 py-2 overflow-auto flex flex-col gap-1 scroll-smooth"
+      >
         {/** all messages appear here */}
         {messageList.map((msgData, idx) => {
           const condition = auth.user?._id === msgData?.sender?._id;

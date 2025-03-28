@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 export const ChatInput = ({ sendMessage }) => {
   const [message, setMessage] = useState("");
@@ -7,6 +8,14 @@ export const ChatInput = ({ sendMessage }) => {
     sendMessage(message);
     setMessage("");
   };
+  const handleKeyDown = (e) => {
+    // if "Enter" key pressed send the message
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      e.target.value.trim().length > 0 && submitHandler(e);
+    }
+  };
+
   return (
     <form
       onSubmit={submitHandler}
@@ -19,6 +28,8 @@ export const ChatInput = ({ sendMessage }) => {
         rows="1"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={handleKeyDown}
+        maxLength={100}
         className="border-none outline-none bg-transparent p-2 resize-none text-inherit flex-1"
       ></textarea>
       <button
@@ -30,4 +41,8 @@ export const ChatInput = ({ sendMessage }) => {
       </button>
     </form>
   );
+};
+
+ChatInput.propTypes = {
+  sendMessage: PropTypes.func.isRequired,
 };
